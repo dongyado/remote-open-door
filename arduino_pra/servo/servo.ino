@@ -37,7 +37,7 @@ void loop() {
         if (comdata == "open" || comdata == "1" ) {
 
             // press the button of open door
-            for (pos = 1; pos < 70; pos+=1) {
+            for (pos = 1; pos < 30; pos+=1) {
                 myservo.write(pos);
                 delay(10);
                 lastPos = pos;
@@ -63,7 +63,7 @@ void loop() {
 //            }
 //            Serial.println(comdata);
 //            delay(200);
-//        }
+         }
 
         // disconnect
         myservo.detach();
