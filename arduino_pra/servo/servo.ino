@@ -6,17 +6,35 @@
 
 #include<Servo.h>
 
-Servo myservo;
+Servo unlockServo;
+Servo phoneServo;
 
 int pos = 0;
+
+int maxPhonePos  = 90;
+int maxUnlockPos = 30;
 
 String comdata = "";
 
 void setup() {
-  Serial.begin(9600);
+  
+    Serial.begin(9600);
+    
+    // connect 
+    unlockServo.attach(9);
+    phoneServo.attach(10);
+  
+    //reset
+    unlockServo.write(0);
+    phoneServo.write(maxPhonePos);
+    
+    delay(200);
+    
+    // disconnect
+    unlockServo.detach();
+    phoneServo.detach();
 }
 
-int lastPos = 0;
 void loop() {
 
     while (Serial.available() > 0)  
@@ -28,47 +46,52 @@ void loop() {
     if (comdata.length() > 0)
     {
         // connect 
-        myservo.attach(9);
-      
-        //reset
-        myservo.write(0);
+        unlockServo.attach(9);
+        phoneServo.attach(10);
 
-        
         if (comdata == "open" || comdata == "1" ) {
-
-            // press the button of open door
-            for (pos = 1; pos < 30; pos+=1) {
-                myservo.write(pos);
-                delay(10);
-                lastPos = pos;
+            
+            // get the phone up
+            for (pos = maxPhonePos; pos >= 1; pos -=1 ){
+              phoneServo.write(pos);
+              delay(10);  
             }
             
-            Serial.println(comdata);
+
+            delay(500);
+            
+            // press the button of open door
+            for (pos = 1; pos < maxUnlockPos; pos+=1) {
+                unlockServo.write(pos);
+                delay(10);
+            }
+            
+            
             
             delay(200);
 
-            //reset
-            for (pos = lastPos; pos >= 1; pos -=1 ){
-              myservo.write(pos);
+            //release the unlock button
+            for (pos = maxUnlockPos; pos >= 1; pos -=1 ){
+              unlockServo.write(pos);
               delay(10);  
-              lastPos = pos;
             }
-            
-//        }else if (comdata == "close" || comdata == "2") {   
-//            //myservo.write(lastPos);                                                                                                                                                                                                                                        
-//            for (pos = lastPos; pos >= 1; pos -=1 ){
-//              myservo.write(pos);
-//              delay(10);  
-//              lastPos = pos;
-//            }
-//            Serial.println(comdata);
-//            delay(200);
-         }
+
+
+
+            // get the phone down            
+            for (pos = 1; pos < maxPhonePos; pos+=1) {
+                phoneServo.write(pos);
+                delay(10);
+            }
+        }
+
+        //Serial.println(comdata);
 
         // disconnect
-        myservo.detach();
-    }
-    
+        unlockServo.detach();
+        phoneServo.detach();
+    } 
+
  
     delay(10);
     comdata = "";

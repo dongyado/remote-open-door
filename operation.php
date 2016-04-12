@@ -1,4 +1,10 @@
 <?php
+/**
+ * operation file
+ *
+ * communication with arduino by /dev/tty
+ *
+ * */
 include 'PhpSerial.php';
 
 // Let's start the class
@@ -25,7 +31,9 @@ $serial->confFlowControl("none");
 // Then we need to open it
 $serial->deviceOpen("w+");
 
+// must sleep at least 2 seconds
 sleep(2);
+
 // To write into
 $serial->sendMessage($action, 1);
 
@@ -33,14 +41,8 @@ $serial->sendMessage($action, 1);
 file_put_contents('/tmp/ar.log', time(). " request \n", FILE_APPEND);
 // Or to read from
 $read = $serial->readPort(9600);
-//echo strlen($read) ."\n";
 //echo $read."\n===\n";
 
-
-//for($i = 0; $i < strlen($read); $i++) {
-//    echo(ord( $read[$i]  ));
-//    echo "\n----\n";
-//}
 
 // If you want to change the configuration, the device must be closed
 $serial->deviceClose();

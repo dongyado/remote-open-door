@@ -1,9 +1,11 @@
 <?php
+/**
+ * simple controll api 
+ *
+ * @author dongyado<dongyado@gmail.com>
+ * */
 
 if (isset($_GET['action'])) {
-    file_put_contents('/tmp/ar.log', " ==============\n", FILE_APPEND);
-    file_put_contents('/tmp/ar.log', time(). " exec\n", FILE_APPEND);
-
     $action = trim($_GET['action']);
     exec("php operation.php {$action}");
 
