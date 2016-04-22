@@ -11,10 +11,13 @@ include 'PhpSerial.php';
 $serial = new PhpSerial;
 
 
-if (php_sapi_name() == "cli")
+if (php_sapi_name() == "cli") {
     $action = trim( $argv[1] );
-else 
-    $action = trim($_GET['action']);
+} else {
+    exit("Access Denied");
+}
+//else 
+//    $action = trim($_GET['action']);
 
 //$action = $argv[1];
 // First we must specify the device. This works on both linux and windows (if
