@@ -121,7 +121,7 @@ while(true) {
 
     if ( ($ip == "") || ($ip != "" && $_data['ip'] != $ip)) {
         $token = Util::generateToken($conf);
-        exec('./tools/mail.sh "137042663@qq.com" "ipchanged"  "'.date('Y-m-d H:i:s')." http://".$_data['ip'].':88?access_token='.$totken.'" ');        
+        exec('./tools/mail.sh "137042663@qq.com" "ipchanged"  "'.date('Y-m-d H:i:s')." http://".$_data['ip'].':88?access_token='.$token.'" ');        
     }
     $ip = $_data['ip'];
 
