@@ -8,6 +8,7 @@
 */
 
 require "./tools/Util.php";
+require("./tools/HttpClient.class.php");
 $conf = include "config.php";
 
 /**
@@ -70,7 +71,6 @@ $password = orgAuthPwd("daydayup");
 
 // echo securityEncode($input1, $password, $input3)."\n";
 
-require("HttpClient.class.php");
 // first try
 $httpClient = new HttpClient("192.168.1.1");
 
