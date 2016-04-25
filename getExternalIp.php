@@ -99,8 +99,8 @@ while(true) {
         $id = securityEncode($data[3], $password, $data[4]);
         echo "id: {$id}\n";
 
-        file_put_contents("./log", "[duration] :" . (time() - $duration)."\n", FILE_APPEND);
-        $duration = time();
+        //file_put_contents("./log", "[duration] :" . (time() - $duration)."\n", FILE_APPEND);
+        //$duration = time();
         sleep(5);
         continue;
     } 
@@ -121,7 +121,7 @@ while(true) {
 
     if ( ($ip == "") || ($ip != "" && $_data['ip'] != $ip)) {
         $token = Util::generateToken($conf);
-        exec('./tools/mail.sh "137042663@qq.com" "ipchanged"  "'.date('Y-m-d H:i:s')." http://".$_data['ip'].':88/?access_token='.$token.'" ');        
+        exec('./tools/mail.sh "137042663@qq.com" "ipchanged"  "'.date('Y-m-d H:i:s')." http://".$_data['ip'].':88/?access_token='.$token.'"');        
     }
     $ip = $_data['ip'];
 
