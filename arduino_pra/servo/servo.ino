@@ -17,7 +17,7 @@ decode_results results;
 int pos = 0;
 
 int maxPhonePos  = 90;
-int maxUnlockPos = 30;
+int maxUnlockPos = 50;
 
 String comdata = "";
 
