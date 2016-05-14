@@ -1,6 +1,6 @@
 <?php
 /**
- * for server 
+ * server to store operation data 
  *
  * */
 $lock_file = '/tmp/ctrl.lock';

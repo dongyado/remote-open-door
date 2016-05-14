@@ -1,6 +1,6 @@
 <?php
 /**
- * client
+ * client to get operation data from server
  *
  * get actoin from server
  * */

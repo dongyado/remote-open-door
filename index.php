@@ -35,6 +35,7 @@ if (isset($_GET['action'])) {
             exit("Opened");
         }
     } else {
+        
         if ($action == 'login') {
             
             $user     = isset($_POST['user']) ? trim($_POST['user']) : ""; 

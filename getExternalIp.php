@@ -1,20 +1,19 @@
 <?php
 /**
- * tplink router control
+ * tplink router control 
+ * 
+ * simulate login to get  external ip, 
+ * and send current ip to someone by email when the ip changed 
  *
- * get the external ip 
-*
-* @author dongyado<dongyado@gmail.com>
-*/
+ * @author dongyado<dongyado@gmail.com>
+ */
 
 require "./tools/Util.php";
 require("./tools/HttpClient.class.php");
 $conf = include "config.php";
 
 /**
-* 加密函数
-* 
-* 
+* encrypt function
 */
 function securityEncode($input1, $input2, $input3) {
     $dictionary = $input3;
@@ -49,7 +48,7 @@ function securityEncode($input1, $input2, $input3) {
 }
 
 /**
-* 加密的password
+* password encrypt
 * 
 */
 function orgAuthPwd($pwd) {
@@ -63,12 +62,11 @@ function orgAuthPwd($pwd) {
 }
 
 
-$password = orgAuthPwd("daydayup");
+$password = orgAuthPwd($conf['router_passwd']);
 
 
 // $input1 = 'cA4l15])f{P^Fv$I';
 // $input3 = 'I0pnNC[On,[lCjvoXXJ0EM2$3K,!JWs$*CEXuqY~6s3$hvk!+IjNXShu0I0C6bH7xiNspf7{k0oH0E]R50,2bciVu]w$)YqX1PUW[O*t,cFlupDKs9mnu9*A1Or4zb+z$]d4B>++42xW!GNN9RGxcnsRED({5uDl,j~mAp*]87]KW!sp~OfiZC]0Wl!KJuOU(L!A4iECD2{2W.c(Ww~Do0S4mc3gLUyneXiJ4{<<DcSD<0{yxW$p3{uug3,W';
-
 // echo securityEncode($input1, $password, $input3)."\n";
 
 // first try
@@ -79,16 +77,17 @@ $id = "";
 $opath = "?code=2&asyn=1";
 $duration = 0;
 $ip = "";
+
+// loop to check the external ip
 while(true) {
     
     $path = $id == "" ? $opath : $opath . "&id={$id}";
-        
     $ret = $httpClient->post($path, array(23));
     
     // get the reponse data after login
     echo "status: ".$ret['status']."\n";
-    $status = $ret['status'];
     
+    $status = $ret['status'];
     $data = preg_split("/\r\n/", $ret['body']);
     if ($status == 401 || $id == "") {
         // handle the body
@@ -106,9 +105,7 @@ while(true) {
     } 
     
 
-    // get data
-    //$datas = preg_split("/\r\n/", $ret['body']);
-
+    // parse data
     $_data = array();
     foreach($data as $item) {
         $record = explode(" ", $item);
@@ -118,14 +115,17 @@ while(true) {
             $_data[] = $item;
     }
 
-
+    
     if ( ($ip == "") || ($ip != "" && $_data['ip'] != $ip)) {
         $token = Util::generateToken($conf);
-        exec('./tools/mail.sh "137042663@qq.com" "ipchanged"  "'.date('Y-m-d H:i:s')." http://".$_data['ip'].':88/?access_token='.$token.'"');        
+        // send email
+        exec('./tools/mail.sh "'.$conf['email'].'" "ipchanged"  "'.date('Y-m-d H:i:s')." http://".$_data['ip'].':88/?access_token='.$token.'"');        
     }
     $ip = $_data['ip'];
 
     echo "[".date('Y-m-d H:i:s')."] ip: {$_data['ip']}\n";
+    
+    // sleep 2 minutes
     sleep(120);
 }
 

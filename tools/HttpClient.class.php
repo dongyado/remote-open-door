@@ -1,7 +1,6 @@
 <?php
 /**
- * http client . 
- *
+ * http client. 
  *
  * @author dongyado<dongaydo@gmail.com>
  * */
