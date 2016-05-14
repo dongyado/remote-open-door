@@ -70,7 +70,7 @@ $password = orgAuthPwd($conf['router_passwd']);
 // echo securityEncode($input1, $password, $input3)."\n";
 
 // first try
-$httpClient = new HttpClient("192.168.1.1");
+$httpClient = new HttpClient($conf['router_host']);
 
 $status = 401;
 $id = "";
