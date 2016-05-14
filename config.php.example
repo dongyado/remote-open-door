@@ -1,0 +1,14 @@
+<?php
+
+return array(
+    // user 
+    'user'      => 'username',
+    'password'  => 'password',
+    'salt'      => 'some strings',
+    
+    // basic information 
+    'email'     => 'email', // email to notify when ip changed
+    'router_passwd' => 'password' // password of login router
+);
+
+?>
