@@ -48,33 +48,29 @@ function securityEncode($input1, $input2, $input3) {
 }
 
 /**
-* password encrypt
+* password encrypt from original password
 * 
 */
 function orgAuthPwd($pwd) {
     	$strDe = "RDpbLfCPsJZ7fiv";
-		$dic = "yLwVl0zKqws7LgKPRQ84Mdt708T1qQ3Ha7xv3H7NyU84p21BriUWBU43odz3iP4rBL3cD02KZciX".
-				  "TysVXiV8ngg6vL48rPJyAUw0HurW20xqxv9aYb4M9wK1Ae0wlro510qXeU07kV57fQMc8L6aLgML".
-				  "wygtc0F10a0Dg70TOoouyFhdysuRMO51yY5ZlOZZLEal1h0t9YQW0Ko7oBwmCAHoic4HYbUyVeU3".
-				  "sfQ1xtXcPcf1aT303wAQhv66qzW";
+	$dic = "yLwVl0zKqws7LgKPRQ84Mdt708T1qQ3Ha7xv3H7NyU84p21BriUWBU43odz3iP4rBL3cD02KZciX".
+	  "TysVXiV8ngg6vL48rPJyAUw0HurW20xqxv9aYb4M9wK1Ae0wlro510qXeU07kV57fQMc8L6aLgML".
+	  "wygtc0F10a0Dg70TOoouyFhdysuRMO51yY5ZlOZZLEal1h0t9YQW0Ko7oBwmCAHoic4HYbUyVeU3".
+	  "sfQ1xtXcPcf1aT303wAQhv66qzW";
 
-		return securityEncode($pwd, $strDe, $dic);
+	return securityEncode($pwd, $strDe, $dic);
 }
 
-
+// ecrypted orginal password
 $password = orgAuthPwd($conf['router_passwd']);
 
-
-// $input1 = 'cA4l15])f{P^Fv$I';
-// $input3 = 'I0pnNC[On,[lCjvoXXJ0EM2$3K,!JWs$*CEXuqY~6s3$hvk!+IjNXShu0I0C6bH7xiNspf7{k0oH0E]R50,2bciVu]w$)YqX1PUW[O*t,cFlupDKs9mnu9*A1Or4zb+z$]d4B>++42xW!GNN9RGxcnsRED({5uDl,j~mAp*]87]KW!sp~OfiZC]0Wl!KJuOU(L!A4iECD2{2W.c(Ww~Do0S4mc3gLUyneXiJ4{<<DcSD<0{yxW$p3{uug3,W';
-// echo securityEncode($input1, $password, $input3)."\n";
-
-// first try
 $httpClient = new HttpClient($conf['router_host']);
 
+// request example
+// http:192.168.1.1/?code=2&asyn=1&id=R0TPpo5pDg%3CJr)5k
 $status = 401;
-$id = "";
-$opath = "?code=2&asyn=1";
+$id = ""; // global id to store newest id
+$opath = "?code=2&asyn=1"; // prefix of path 
 $duration = 0;
 $ip = "";
 
@@ -88,23 +84,24 @@ while(true) {
     echo "status: ".$ret['status']."\n";
     
     $status = $ret['status'];
+    // parse body
     $data = preg_split("/\r\n/", $ret['body']);
+    
+    // response 401, Unauthoried
     if ($status == 401 || $id == "") {
-        // handle the body
-        
+
         echo "auth data:" .json_encode($data)."\n";
 
-        // generate
+        // generate new id
         $id = securityEncode($data[3], $password, $data[4]);
         echo "id: {$id}\n";
 
         //file_put_contents("./log", "[duration] :" . (time() - $duration)."\n", FILE_APPEND);
-        //$duration = time();
         sleep(5);
-        continue;
+        continue; 
     } 
     
-
+    // response ok		
     // parse data
     $_data = array();
     foreach($data as $item) {
@@ -115,7 +112,7 @@ while(true) {
             $_data[] = $item;
     }
 
-    
+    // send email if necessary
     if ( ($ip == "") || ($ip != "" && $_data['ip'] != $ip)) {
         $token = Util::generateToken($conf);
         // send email
